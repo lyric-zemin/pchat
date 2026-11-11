@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 天色由 RoomScene 按时段写入；玻璃浮层与浮层文字保持稳定对比，
+     只有直接落在天空上的大标题（--stage-*）随明暗切换。 */
+  --scene-sky-top: #1b2436;
+  --scene-sky-bottom: #0b1020;
+  --scene-glow: rgba(232, 168, 124, 0.3);
+  --scene-line: rgba(242, 198, 160, 0.22);
+  --scene-panel: rgba(18, 20, 32, 0.58);
+  --scene-ink: #f3ece4;
+  --scene-soft: rgba(232, 227, 221, 0.66);
+  --stage-ink: #f3ece4;
+  --stage-soft: rgba(232, 227, 221, 0.72);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-midnight-900 font-sans text-cream antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(232, 168, 124, 0.36);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid #f2c6a0;
+  outline-offset: 3px;
+}
+
+.font-code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-variant-ligatures: none;
+}
+
+/* 玻璃：把 UI 当作窗上的一层雾气，而不是浮在页面上的卡片 */
+.glass {
+  background: linear-gradient(
+    155deg,
+    rgba(26, 31, 47, 0.78),
+    rgba(13, 17, 29, 0.68)
+  );
+  border: 1px solid var(--scene-line);
+  backdrop-filter: blur(24px) saturate(135%);
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
+  box-shadow:
+    0 22px 64px rgba(6, 8, 16, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.glass-deep {
+  background: linear-gradient(
+    155deg,
+    rgba(20, 24, 38, 0.9),
+    rgba(11, 15, 26, 0.84)
+  );
+  border: 1px solid var(--scene-line);
+  backdrop-filter: blur(28px) saturate(130%);
+  -webkit-backdrop-filter: blur(28px) saturate(130%);
+  box-shadow:
+    0 26px 70px rgba(4, 6, 14, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-hover {
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 420ms ease,
+    box-shadow 420ms ease,
+    background-color 1200ms ease;
+}
+
+.glass-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(242, 198, 160, 0.46);
+  box-shadow:
+    0 30px 80px rgba(4, 6, 14, 0.46),
+    0 0 34px rgba(232, 168, 124, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 时段过渡：颜色本身在 1.2 秒内跟着天色走 */
+.scene-tone {
+  transition:
+    background-color 1200ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 1200ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 1200ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.seam-light {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(242, 198, 160, 0.08) 12%,
+    rgba(242, 198, 160, 0.75) 50%,
+    rgba(242, 198, 160, 0.08) 88%,
+    transparent
+  );
+  box-shadow: 0 0 32px 6px rgba(232, 168, 124, 0.28);
+}
+
+/* 门扇木纹：纯 CSS，避免外部素材 */
+.door-grain {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.018) 0 2px,
+      transparent 2px 46px
+    ),
+    linear-gradient(90deg, #121826, #1b2436 50%, #0e1421);
+}
+
+/* 视频画面的双层窗框 */
+.window-frame {
+  box-shadow:
+    0 0 0 1px rgba(242, 198, 160, 0.24),
+    0 0 0 9px rgba(12, 16, 28, 0.55),
+    0 0 0 10px rgba(242, 198, 160, 0.12),
+    0 40px 90px rgba(4, 6, 14, 0.5);
+}
+
+/* 亮度滑杆 */
+.pchat-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.pchat-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f2c6a0;
+  border: 3px solid #1b2436;
+  box-shadow: 0 0 16px rgba(232, 168, 124, 0.7);
+  transition: transform 200ms ease;
+}
+
+.pchat-range::-webkit-slider-thumb:hover {
+  transform: scale(1.16);
+}
+
+.pchat-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f2c6a0;
+  border: 3px solid #1b2436;
+  box-shadow: 0 0 16px rgba(232, 168, 124, 0.7);
+}
+
+.pchat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(242, 198, 160, 0.32) transparent;
+}
+
+.pchat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pchat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(242, 198, 160, 0.3);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
