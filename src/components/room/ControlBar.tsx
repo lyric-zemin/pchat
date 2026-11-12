@@ -7,6 +7,7 @@ import {
   Mic,
   MicOff,
   PhoneOff,
+  RefreshCw,
   SlidersHorizontal,
   Video,
   VideoOff,
@@ -31,14 +32,15 @@ export default function ControlBar({ onOpenPanel, activePanel }: ControlBarProps
   const camOn = useRoomStore((state) => state.camOn);
   const soundOff = useRoomStore((state) => state.soundOff);
   const phase = useRoomStore((state) => state.phase);
-  const { localStream, toggleMic, toggleCam, toggleSound, leaveRoom } = useRoomEngine();
+  const { localStream, toggleMic, toggleCam, toggleSound, leaveRoom, switchCamera, canSwitchCamera } =
+    useRoomEngine();
   const hasAudio = Boolean(localStream?.getAudioTracks().length);
   const hasVideo = Boolean(localStream?.getVideoTracks().length);
   const leaving = phase === "leaving";
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 px-4 pb-4 sm:px-8">
-      <div className="glass mx-auto flex h-[72px] max-w-xl items-center justify-center gap-1.5 rounded-full px-3 sm:gap-2 sm:px-5">
+    <div className="safe-inset-x pointer-events-none fixed inset-x-0 bottom-0 z-30 px-2 pb-[calc(0.75rem+var(--safe-bottom))] sm:px-8 sm:pb-[calc(1rem+var(--safe-bottom))] landscapeShort:bottom-auto landscapeShort:left-auto landscapeShort:right-0 landscapeShort:top-[calc(4.5rem+var(--safe-top))] landscapeShort:w-[76px] landscapeShort:px-0">
+      <div className="glass pchat-scroll pointer-events-auto mx-auto flex h-[72px] max-w-xl items-center justify-center gap-1 rounded-full px-2 sm:gap-2 sm:px-5 landscapeShort:h-auto landscapeShort:max-h-[calc(100dvh-6rem)] landscapeShort:flex-col landscapeShort:gap-1 landscapeShort:overflow-y-auto landscapeShort:p-2">
         <Tooltip label={micOn ? "关掉麦克风" : "打开麦克风"}>
           <Button
             variant={micOn ? "quiet" : "danger"}
@@ -63,7 +65,19 @@ export default function ControlBar({ onOpenPanel, activePanel }: ControlBarProps
           </Button>
         </Tooltip>
 
-        <Tooltip label={soundOff ? "打开提示音" : "静音提示音"}>
+        <Tooltip label="切换前后摄像头">
+          <Button
+            variant="quiet"
+            size="icon"
+            onClick={switchCamera}
+            disabled={!hasVideo || !canSwitchCamera || leaving}
+            aria-label="切换前后摄像头"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </Tooltip>
+
+        <Tooltip label={soundOff ? "打开提示音" : "静音提示音"} className="hidden sm:inline-flex">
           <Button
             variant="quiet"
             size="icon"
@@ -74,9 +88,9 @@ export default function ControlBar({ onOpenPanel, activePanel }: ControlBarProps
           </Button>
         </Tooltip>
 
-        <span className="mx-1 hidden h-6 w-px bg-[var(--scene-line)] sm:block" />
+        <span className="mx-0.5 hidden h-6 w-px bg-[var(--scene-line)] sm:block" />
 
-        <div className="flex gap-1.5 lg:hidden">
+        <div className="flex gap-1 lg:hidden">
           <Button
             variant={activePanel === "chat" ? "outline" : "quiet"}
             size="icon"
@@ -95,7 +109,7 @@ export default function ControlBar({ onOpenPanel, activePanel }: ControlBarProps
           </Button>
         </div>
 
-        <div className="relative">
+        <div className="relative landscapeShort:order-first">
           <AnimatePresence>
             {confirming && (
               <motion.div
@@ -103,7 +117,7 @@ export default function ControlBar({ onOpenPanel, activePanel }: ControlBarProps
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                className="glass-deep absolute bottom-full right-0 mb-4 w-64 rounded-2xl p-4 text-center"
+                className="glass-deep absolute bottom-full right-0 mb-4 w-64 max-w-[calc(100vw-2rem)] rounded-2xl p-4 text-center landscapeShort:bottom-auto landscapeShort:right-full landscapeShort:top-0 landscapeShort:mb-0 landscapeShort:mr-3"
               >
                 <p className="font-display text-base text-cream">要走了吗？</p>
                 <p className="mt-1.5 text-xs leading-5 text-cream/60">

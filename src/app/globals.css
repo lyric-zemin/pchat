@@ -14,10 +14,20 @@
   --scene-soft: rgba(232, 227, 221, 0.66);
   --stage-ink: #f3ece4;
   --stage-soft: rgba(232, 227, 221, 0.72);
+
+  /* viewportFit=cover 后由固定栏自行避让刘海、状态栏与 Home Indicator。 */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
@@ -28,6 +38,27 @@ body {
 body {
   @apply bg-midnight-900 font-sans text-cream antialiased;
   overflow-x: hidden;
+}
+
+/* 动态视口高度：浏览器工具栏收起/展开时不会把底栏顶出屏幕。 */
+.app-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app-sheet {
+  height: 70vh;
+  height: 70dvh;
+}
+
+/* fixed 栏保留原有 px-* 响应式间距，只把左右边界收进安全区。 */
+.safe-inset-x {
+  margin-left: var(--safe-left);
+  margin-right: var(--safe-right);
+}
+
+.drawer-handle {
+  touch-action: none;
 }
 
 ::selection {
@@ -53,8 +84,9 @@ body {
     rgba(13, 17, 29, 0.68)
   );
   border: 1px solid var(--scene-line);
-  backdrop-filter: blur(24px) saturate(135%);
-  -webkit-backdrop-filter: blur(24px) saturate(135%);
+  /* 中低端手机上缩小模糊半径，减少与视频解码叠加的 GPU 开销。 */
+  backdrop-filter: blur(16px) saturate(135%);
+  -webkit-backdrop-filter: blur(16px) saturate(135%);
   box-shadow:
     0 22px 64px rgba(6, 8, 16, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
@@ -67,8 +99,8 @@ body {
     rgba(11, 15, 26, 0.84)
   );
   border: 1px solid var(--scene-line);
-  backdrop-filter: blur(28px) saturate(130%);
-  -webkit-backdrop-filter: blur(28px) saturate(130%);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
   box-shadow:
     0 26px 70px rgba(4, 6, 14, 0.42),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -137,10 +169,12 @@ body {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
+  /* 整块 44px 都可拖动；轨道由 Slider 的 background-size 画在中间 6px。 */
+  height: 44px;
   border-radius: 999px;
   outline: none;
   cursor: pointer;
+  touch-action: none;
 }
 
 .pchat-range::-webkit-slider-thumb {
@@ -154,7 +188,8 @@ body {
   transition: transform 200ms ease;
 }
 
-.pchat-range::-webkit-slider-thumb:hover {
+.pchat-range::-webkit-slider-thumb:hover,
+.pchat-range::-webkit-slider-thumb:active {
   transform: scale(1.16);
 }
 
@@ -170,6 +205,8 @@ body {
 .pchat-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(242, 198, 160, 0.32) transparent;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .pchat-scroll::-webkit-scrollbar {
@@ -189,5 +226,21 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  [class*="animate-"],
+  .scene-particle {
+    animation: none !important;
+  }
+
+  .scene-particle {
+    display: none !important;
+  }
+}
+
+/* 窄屏只保留约一半粒子，减少中低端手机的合成层与耗电。 */
+@media (max-width: 640px) {
+  .scene-particle-extra {
+    display: none;
   }
 }

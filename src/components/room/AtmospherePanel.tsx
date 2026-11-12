@@ -20,7 +20,7 @@ export default function AtmospherePanel({ className }: { className?: string }) {
   const engine = useRoomEngine();
 
   return (
-    <section className={cn("glass-deep rounded-4xl px-5 py-4", className)}>
+    <section className={cn("glass-deep rounded-4xl px-4 py-3 sm:px-5 sm:py-4", className)}>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="font-display text-base font-semibold text-[var(--scene-ink)]">一起调这间屋</h3>
         <span className="text-[11px] text-[var(--scene-soft)]">两边同时变</span>
@@ -52,7 +52,7 @@ export default function AtmospherePanel({ className }: { className?: string }) {
 
       <div className="border-t border-white/[0.07] pt-3.5">
         <div className="mb-2.5 text-sm text-[var(--scene-ink)]/85">窗外</div>
-        <div className="grid grid-cols-4 gap-1.5">
+        <div className="grid grid-cols-4 gap-2 sm:gap-1.5">
           {WEATHERS.map(({ id, label, icon: Icon }) => {
             const active = atmosphere.weather === id;
             return (
@@ -62,7 +62,7 @@ export default function AtmospherePanel({ className }: { className?: string }) {
                 aria-pressed={active}
                 onClick={() => engine.sendAtmosphere("weather", id)}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-xl border py-2 text-xs transition-all duration-300 active:scale-95",
+                  "flex min-h-[44px] flex-col items-center justify-center gap-1 rounded-xl border py-2 text-xs transition-all duration-300 active:scale-95",
                   active
                     ? "border-ember-100/60 bg-ember-100/20 text-[var(--scene-ink)] shadow-glow-sm"
                     : "border-white/[0.08] bg-white/[0.03] text-[var(--scene-soft)] hover:border-ember-100/35 hover:bg-white/[0.08]",

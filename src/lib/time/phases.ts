@@ -3,6 +3,8 @@ import type { TimePhase } from "@/types/room";
 export interface PhaseTheme {
   id: TimePhase;
   label: string;
+  /** 窄屏时段控件的单字标签，避免中文被挤成竖排。 */
+  shortLabel: string;
   window: string;
   line: string;
   skyTop: string;
@@ -24,6 +26,7 @@ export const PHASES: Record<TimePhase, PhaseTheme> = {
   dawn: {
     id: "dawn",
     label: "清晨",
+    shortLabel: "晨",
     window: "05:00 – 08:00",
     line: "光刚爬上窗台，屋里还没全亮。",
     skyTop: "#94A9C6",
@@ -41,6 +44,7 @@ export const PHASES: Record<TimePhase, PhaseTheme> = {
   day: {
     id: "day",
     label: "白昼",
+    shortLabel: "昼",
     window: "08:00 – 17:00",
     line: "窗外亮得能看清远处的树。",
     skyTop: "#8FB8DE",
@@ -58,6 +62,7 @@ export const PHASES: Record<TimePhase, PhaseTheme> = {
   dusk: {
     id: "dusk",
     label: "黄昏",
+    shortLabel: "昏",
     window: "17:00 – 20:00",
     line: "天色沉下来了，该把灯打开。",
     skyTop: "#5A4665",
@@ -75,6 +80,7 @@ export const PHASES: Record<TimePhase, PhaseTheme> = {
   night: {
     id: "night",
     label: "夜晚",
+    shortLabel: "夜",
     window: "20:00 – 05:00",
     line: "只剩这一盏灯还亮着。",
     skyTop: "#0B1020",

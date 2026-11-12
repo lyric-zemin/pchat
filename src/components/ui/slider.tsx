@@ -40,7 +40,11 @@ export function Slider({
       onChange={(event) => onChange(Number(event.target.value))}
       className={cn("pchat-range scene-tone", className)}
       style={{
-        background: `linear-gradient(90deg, #E8A87C 0%, #F2C6A0 ${pct}%, rgba(255,255,255,0.13) ${pct}%, rgba(255,255,255,0.13) 100%)`,
+        // 44px 高的 input 是触控热区，轨道只画中间 6px。
+        backgroundImage: `linear-gradient(90deg, #E8A87C 0%, #F2C6A0 ${pct}%, rgba(255,255,255,0.13) ${pct}%, rgba(255,255,255,0.13) 100%)`,
+        backgroundSize: "100% 6px",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         cursor: disabled ? "not-allowed" : "pointer",
       }}
     />

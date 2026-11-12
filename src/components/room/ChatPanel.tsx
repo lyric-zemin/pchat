@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SendHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ export default function ChatPanel({ className }: { className?: string }) {
   const messages = useRoomStore((state) => state.messages);
   const peerTyping = useRoomStore((state) => state.peerTyping);
   const engine = useRoomEngine();
+  const reduceMotion = useReducedMotion();
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const typingTimer = useRef<number | null>(null);
@@ -47,12 +48,12 @@ export default function ChatPanel({ className }: { className?: string }) {
 
   return (
     <section className={cn("glass-deep flex h-full min-h-0 flex-col rounded-4xl", className)}>
-      <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
+      <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3 sm:px-5 sm:py-4">
         <h3 className="font-display text-base font-semibold text-[var(--scene-ink)]">说点什么</h3>
         <span className="text-[11px] text-[var(--scene-soft)]">只在这间房里</span>
       </div>
 
-      <div ref={scrollRef} className="pchat-scroll min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-4">
+      <div ref={scrollRef} className="pchat-scroll min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3 sm:px-5 sm:py-4">
         {messages.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
             <p className="font-display text-base text-cream/70">屋子还安静着</p>
@@ -121,8 +122,10 @@ export default function ChatPanel({ className }: { className?: string }) {
                   <motion.span
                     key={i}
                     className="h-1 w-1 rounded-full bg-ember-100"
-                    animate={{ y: [0, -4, 0] }}
-                    transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.16 }}
+                    animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
+                    transition={
+                      reduceMotion ? undefined : { duration: 0.9, repeat: Infinity, delay: i * 0.16 }
+                    }
                   />
                 ))}
               </span>
@@ -131,15 +134,15 @@ export default function ChatPanel({ className }: { className?: string }) {
         </AnimatePresence>
       </div>
 
-      <div className="border-t border-white/[0.08] px-4 pb-4 pt-3">
-        <div className="mb-3 flex flex-wrap gap-1">
+      <div className="border-t border-white/[0.08] px-3 pb-[calc(0.75rem+var(--safe-bottom))] pt-2 sm:px-4 sm:pb-4 sm:pt-3">
+        <div className="mb-2 flex flex-wrap gap-1.5 sm:mb-3 sm:gap-1">
           {QUICK_REPLIES.map((emoji) => (
             <button
               key={emoji}
               type="button"
               aria-label={`发送 ${emoji}`}
               onClick={() => engine.sendEmoji(emoji)}
-              className="flex h-8 w-8 items-center justify-center rounded-xl text-base transition-all duration-300 hover:scale-125 hover:bg-white/10 active:scale-95"
+              className="flex h-11 w-11 items-center justify-center rounded-xl text-base transition-all duration-300 hover:scale-110 hover:bg-white/10 active:scale-95"
             >
               {emoji}
             </button>
@@ -155,6 +158,8 @@ export default function ChatPanel({ className }: { className?: string }) {
             placeholder="写一句给对方…"
             aria-label="聊天内容"
             maxLength={500}
+            autoComplete="off"
+            enterKeyHint="send"
           />
           <Button size="icon" onClick={submit} disabled={!draft.trim()} aria-label="发送消息">
             <SendHorizontal className="h-4 w-4" />

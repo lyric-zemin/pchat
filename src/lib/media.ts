@@ -1,5 +1,11 @@
 "use client";
 
+import { describeMediaError } from "@/lib/peer/errors";
+
+export type FacingMode = "user" | "environment";
+
+export const DEFAULT_FACING: FacingMode = "user";
+
 export const MEDIA_CONSTRAINTS: MediaStreamConstraints = {
   video: {
     width: { ideal: 640 },
@@ -13,6 +19,18 @@ export const MEDIA_CONSTRAINTS: MediaStreamConstraints = {
     autoGainControl: true,
   },
 };
+
+function constraintsFor(facing: FacingMode): MediaStreamConstraints {
+  return {
+    video: {
+      width: { ideal: 640 },
+      height: { ideal: 480 },
+      frameRate: { ideal: 24, max: 30 },
+      facingMode: { ideal: facing },
+    },
+    audio: MEDIA_CONSTRAINTS.audio,
+  };
+}
 
 export interface MediaResult {
   stream: MediaStream | null;
@@ -36,18 +54,22 @@ async function attempt(constraints: MediaStreamConstraints): Promise<MediaStream
 /**
  * 依次降级：完整音视频 → 仅声音 → 仅画面 → 纯文字。
  * 任一级失败都不抛错，房间依然可以进入。
+ * facing 用于手机前后摄像头切换，桌面设备会忽略该 ideal 约束。
  */
-export async function acquireLocalMedia(): Promise<MediaResult> {
+export async function acquireLocalMedia(
+  facing: FacingMode = DEFAULT_FACING,
+): Promise<MediaResult> {
   if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
     return {
       stream: null,
-      note: "这个浏览器拿不到摄像头，你仍然可以发消息、调灯光。",
+      note: describeMediaError().detail,
       hasVideo: false,
       hasAudio: false,
     };
   }
 
-  const full = await attempt(MEDIA_CONSTRAINTS);
+  const constraints = constraintsFor(facing);
+  const full = await attempt(constraints);
   if (full) {
     return { stream: full, note: null, hasVideo: true, hasAudio: true };
   }
@@ -62,7 +84,7 @@ export async function acquireLocalMedia(): Promise<MediaResult> {
     };
   }
 
-  const videoOnly = await attempt({ video: MEDIA_CONSTRAINTS.video, audio: false });
+  const videoOnly = await attempt({ video: constraints.video, audio: false });
   if (videoOnly) {
     return {
       stream: videoOnly,

@@ -5,6 +5,14 @@ const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      // 矮屏 / 横屏手机：用于压缩视频区与顶部留白，避免固定栏遮住画面。
+      screens: {
+        short: { raw: "(max-height: 640px)" },
+        // 仅手机横屏：桌面宽屏也是 landscape，但不能套用竖排控制栏。
+        landscapeShort: {
+          raw: "(orientation: landscape) and (max-height: 640px)",
+        },
+      },
       colors: {
         ember: {
           50: "#FBF1E8",

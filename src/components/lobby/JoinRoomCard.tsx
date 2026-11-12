@@ -33,12 +33,16 @@ export default function JoinRoomCard() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
-      className="glass glass-hover rounded-4xl p-4 sm:p-5 md:translate-y-8"
+      className="glass glass-hover rounded-4xl p-3 sm:p-5 md:translate-y-8"
     >
-      <div className="mb-3 flex items-start justify-between gap-3">
+      <div className="mb-2 flex items-start justify-between gap-3 sm:mb-3">
         <div>
-          <h2 className="font-display text-2xl font-semibold text-[var(--scene-ink)]">凭暗号赴约</h2>
-          <p className="mt-1.5 text-sm text-[var(--scene-soft)]">把对方给你的暗号敲进门里。</p>
+          <h2 className="font-display text-xl font-semibold text-[var(--scene-ink)] sm:text-2xl">
+            凭暗号赴约
+          </h2>
+          <p className="mt-1.5 hidden text-sm text-[var(--scene-soft)] sm:block">
+            把对方给你的暗号敲进门里。
+          </p>
         </div>
         <span className="shrink-0 rounded-full border border-[var(--scene-line)] px-3 py-1 text-xs text-[var(--scene-soft)]">
           来客
@@ -63,7 +67,7 @@ export default function JoinRoomCard() {
         />
       </div>
 
-      <div className="mt-2.5 flex min-h-[46px] items-start">
+      <div className="mt-2 flex min-h-[40px] items-start sm:min-h-[46px]">
         <p className={`text-xs leading-5 ${invalid ? "text-clay" : "text-[var(--scene-soft)]"}`}>
           {hint}
         </p>
@@ -86,7 +90,7 @@ export default function JoinRoomCard() {
         敲门进去
         <ArrowRight className="h-4 w-4" />
       </Button>
-      <p className="mt-2 min-h-[18px] text-center text-xs text-[var(--scene-soft)]">
+      <p className="mt-1.5 hidden min-h-[18px] text-center text-xs text-[var(--scene-soft)] sm:block">
         门里有人应了，视频就会自己接上。
       </p>
     </motion.div>

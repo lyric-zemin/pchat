@@ -25,8 +25,8 @@ export default function TopBar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30 px-4 pt-4 sm:px-8">
-      <div className="glass mx-auto flex h-16 max-w-6xl items-center justify-between rounded-full px-5 sm:px-7">
+    <header className="safe-inset-x fixed inset-x-0 top-0 z-30 px-4 pt-[calc(0.75rem+var(--safe-top))] sm:px-8 sm:pt-[calc(1rem+var(--safe-top))]">
+      <div className="glass mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full px-4 sm:h-16 sm:px-7">
         <div className="flex items-baseline gap-3">
           <span className="font-display text-xl font-semibold tracking-wide text-[var(--scene-ink)]">
             pchat

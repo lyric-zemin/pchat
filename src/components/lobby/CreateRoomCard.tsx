@@ -44,19 +44,23 @@ export default function CreateRoomCard() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      className="glass glass-hover rounded-4xl p-4 sm:p-5"
+      className="glass glass-hover rounded-4xl p-3 sm:p-5"
     >
-      <div className="mb-3 flex items-start justify-between gap-3">
+      <div className="mb-2 flex items-start justify-between gap-3 sm:mb-3">
         <div>
-          <h2 className="font-display text-2xl font-semibold text-[var(--scene-ink)]">开一间房</h2>
-          <p className="mt-1.5 text-sm text-[var(--scene-soft)]">生成一串暗号，递给想见的人。</p>
+          <h2 className="font-display text-xl font-semibold text-[var(--scene-ink)] sm:text-2xl">
+            开一间房
+          </h2>
+          <p className="mt-1.5 hidden text-sm text-[var(--scene-soft)] sm:block">
+            生成一串暗号，递给想见的人。
+          </p>
         </div>
         <span className="shrink-0 rounded-full border border-[var(--scene-line)] px-3 py-1 text-xs text-[var(--scene-soft)]">
           房主
         </span>
       </div>
 
-      <div className="mb-3 flex min-h-[68px] items-center justify-center rounded-2xl border border-[var(--scene-line)] bg-black/15 px-4 py-3">
+      <div className="mb-2 flex min-h-[52px] items-center justify-center rounded-2xl border border-[var(--scene-line)] bg-black/15 px-3 py-2 sm:mb-3 sm:min-h-[68px] sm:px-4 sm:py-3">
         {custom ? (
           <Input
             value={draft}
@@ -69,7 +73,7 @@ export default function CreateRoomCard() {
             className="h-12 border-none bg-transparent text-center font-code text-xl tracking-[0.2em] focus:shadow-none"
           />
         ) : (
-          <div className="font-code text-2xl tracking-[0.16em] text-[var(--scene-ink)] sm:text-3xl">
+          <div className="font-code text-xl tracking-[0.16em] text-[var(--scene-ink)] sm:text-2xl md:text-3xl">
             <AnimatePresence mode="wait">
               <motion.span key={code} className="flex items-center">
                 {code
@@ -78,8 +82,8 @@ export default function CreateRoomCard() {
                   .map((char, index) => (
                     <motion.span
                       key={`${code}-${index}`}
-                      initial={{ opacity: 0, y: 10, filter: "blur(7px)" }}
-                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.06, duration: 0.42 }}
                       className={index === 3 ? "ml-2.5 text-ember-100" : undefined}
                     >
@@ -92,7 +96,7 @@ export default function CreateRoomCard() {
         )}
       </div>
 
-      <div className="mb-3 flex flex-wrap items-center gap-1">
+      <div className="mb-2 flex flex-wrap items-center gap-1 sm:mb-3">
         <Button
           variant="ghost"
           size="sm"
@@ -130,7 +134,7 @@ export default function CreateRoomCard() {
         开门进去
         <ArrowRight className="h-4 w-4" />
       </Button>
-      <p className="mt-2 min-h-[18px] text-center text-xs text-[var(--scene-soft)]">
+      <p className="mt-1.5 hidden min-h-[18px] text-center text-xs text-[var(--scene-soft)] sm:block">
         {!code ? "正在生成暗号…" : (check.hint ?? "房间会一直亮着，等对方凭暗号敲门。")}
       </p>
     </motion.div>

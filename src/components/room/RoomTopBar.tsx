@@ -45,9 +45,9 @@ export default function RoomTopBar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30 px-4 pt-4 sm:px-8">
-      <div className="glass flex h-16 items-center justify-between gap-3 rounded-full px-4 sm:px-6">
-        <div className="flex items-center gap-3">
+    <header className="safe-inset-x fixed inset-x-0 top-0 z-30 px-4 pt-[calc(0.75rem+var(--safe-top))] sm:px-8 sm:pt-[calc(1rem+var(--safe-top))]">
+      <div className="glass flex h-14 items-center justify-between gap-2 rounded-full px-3 sm:h-16 sm:gap-3 sm:px-6">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <span className="hidden font-display text-lg font-semibold text-[var(--scene-ink)] sm:inline">
             pchat
           </span>
@@ -57,7 +57,7 @@ export default function RoomTopBar() {
               type="button"
               onClick={handleCopy}
               aria-label="复制房间暗号"
-              className="flex items-center gap-2 rounded-xl px-2 py-1.5 font-code text-sm tracking-[0.16em] text-[var(--scene-ink)] transition-colors hover:bg-white/10"
+              className="flex h-11 min-w-[44px] items-center justify-center gap-2 rounded-xl px-2 font-code text-sm tracking-[0.16em] text-[var(--scene-ink)] transition-colors hover:bg-white/10"
             >
               {code}
               {copied ? <Check className="h-3.5 w-3.5 text-moss" /> : <Copy className="h-3.5 w-3.5 opacity-60" />}
@@ -65,11 +65,11 @@ export default function RoomTopBar() {
           </Tooltip>
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden md:block landscapeShort:hidden">
           <TimeDial variant="room" />
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-3">
           <div className="hidden items-center gap-2 text-xs sm:flex">
             <span className={`h-1.5 w-1.5 rounded-full ${connection === "connected" ? "bg-moss" : "bg-honey"}`} />
             <span className="text-[var(--scene-soft)]">{STATUS[connection]}</span>

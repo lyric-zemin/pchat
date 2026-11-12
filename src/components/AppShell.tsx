@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { MotionConfig, motion } from "framer-motion";
 import LobbyView from "@/components/lobby/LobbyView";
 import DoorTransition from "@/components/room/DoorTransition";
 import RoomView from "@/components/room/RoomView";
@@ -16,7 +16,7 @@ function SceneRoot() {
   const inRoom = phase !== "lobby";
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden">
+    <main className="app-screen relative w-full overflow-hidden">
       <motion.div
         key={inRoom ? "room" : "lobby"}
         initial={{ opacity: 0 }}
@@ -31,9 +31,12 @@ function SceneRoot() {
 }
 
 export default function AppShell() {
+  // 系统开启「减弱动态效果」时，统一关掉所有 framer-motion 位移动画。
   return (
-    <PeerRoomProvider>
-      <SceneRoot />
-    </PeerRoomProvider>
+    <MotionConfig reducedMotion="user">
+      <PeerRoomProvider>
+        <SceneRoot />
+      </PeerRoomProvider>
+    </MotionConfig>
   );
 }

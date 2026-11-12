@@ -5,7 +5,8 @@ import { useRoomStore } from "@/lib/store";
 import { PHASES } from "@/lib/time/phases";
 import type { Weather } from "@/types/room";
 
-// 固定布局，避免服务端与客户端随机位置不一致
+// 固定布局，避免服务端与客户端随机位置不一致。
+// scene-particle / scene-particle-extra 由 CSS 在窄屏与「减弱动态」时裁减。
 const STARS = Array.from({ length: 22 }, (_, i) => ({
   left: `${(i * 37 + 7) % 96}%`,
   top: `${(i * 23 + 5) % 62}%`,
@@ -38,7 +39,7 @@ function WeatherLayer({ weather }: { weather: Weather }) {
         {RAIN.map((drop, i) => (
           <span
             key={i}
-            className="absolute top-0 h-12 w-px animate-rainfall bg-gradient-to-b from-transparent via-white/55 to-transparent"
+            className={`scene-particle absolute top-0 h-12 w-px animate-rainfall bg-gradient-to-b from-transparent via-white/55 to-transparent ${i >= 8 ? "scene-particle-extra" : ""}`}
             style={{ left: drop.left, animationDelay: drop.delay, animationDuration: drop.duration }}
           />
         ))}
@@ -51,7 +52,7 @@ function WeatherLayer({ weather }: { weather: Weather }) {
         {SNOW.map((flake, i) => (
           <span
             key={i}
-            className="absolute top-0 animate-snowfall rounded-full bg-white/75"
+            className={`scene-particle absolute top-0 animate-snowfall rounded-full bg-white/75 ${i >= 9 ? "scene-particle-extra" : ""}`}
             style={{
               left: flake.left,
               width: flake.size,
@@ -69,7 +70,7 @@ function WeatherLayer({ weather }: { weather: Weather }) {
       {FLIES.map((fly, i) => (
         <span
           key={i}
-          className="absolute h-1.5 w-1.5 animate-floatup rounded-full bg-honey shadow-[0_0_12px_4px_rgba(226,184,107,0.7)]"
+          className={`scene-particle absolute h-1.5 w-1.5 animate-floatup rounded-full bg-honey shadow-[0_0_12px_4px_rgba(226,184,107,0.7)] ${i >= 6 ? "scene-particle-extra" : ""}`}
           style={{
             left: fly.left,
             bottom: fly.bottom,
@@ -108,7 +109,7 @@ export default function RoomScene({ dimmed = false }: { dimmed?: boolean }) {
 
       {/* 日 / 月 */}
       <motion.div
-        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full blur-[70px]"
+        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
         animate={{
           left: theme.sun.x,
           top: theme.sun.y,
@@ -130,7 +131,7 @@ export default function RoomScene({ dimmed = false }: { dimmed?: boolean }) {
             {STARS.map((star, i) => (
               <span
                 key={i}
-                className="absolute animate-twinkle rounded-full bg-white"
+                className={`scene-particle absolute animate-twinkle rounded-full bg-white ${i >= 10 ? "scene-particle-extra" : ""}`}
                 style={{
                   left: star.left,
                   top: star.top,
@@ -146,9 +147,9 @@ export default function RoomScene({ dimmed = false }: { dimmed?: boolean }) {
 
       {(theme.id === "day" || theme.id === "dawn") && (
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute left-[6%] top-[16%] h-24 w-[38vw] animate-drift rounded-full bg-white/20 blur-3xl" />
+          <div className="absolute left-[6%] top-[16%] h-24 w-[38vw] animate-drift rounded-full bg-white/20 blur-2xl" />
           <div
-            className="absolute right-[4%] top-[36%] h-16 w-[30vw] animate-drift rounded-full bg-white/15 blur-3xl"
+            className="absolute right-[4%] top-[36%] h-16 w-[30vw] animate-drift rounded-full bg-white/15 blur-2xl"
             style={{ animationDelay: "-9s" }}
           />
         </div>
@@ -174,13 +175,13 @@ export default function RoomScene({ dimmed = false }: { dimmed?: boolean }) {
 
       {/* 灯：亮度由双方共同调节，白天自动收敛 */}
       <motion.div
-        className="absolute -bottom-[22%] -left-[12%] h-[85%] w-[62%] rounded-full blur-[110px]"
+        className="absolute -bottom-[22%] -left-[12%] h-[85%] w-[62%] rounded-full blur-3xl"
         animate={{ opacity: light * (1 - theme.ambient * 0.45) }}
         transition={{ duration: 1.2 }}
         style={{ background: "rgba(232, 168, 124, 0.6)" }}
       />
       <motion.div
-        className="absolute right-[6%] top-0 h-[70%] w-[38%] blur-[80px]"
+        className="absolute right-[6%] top-0 h-[70%] w-[38%] blur-3xl"
         animate={{ opacity: light * 0.42 }}
         transition={{ duration: 1.2 }}
         style={{
@@ -197,7 +198,7 @@ export default function RoomScene({ dimmed = false }: { dimmed?: boolean }) {
             exit={{ opacity: 0, scale: 0.75 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="absolute -bottom-2 h-28 w-40 rounded-full bg-ember-200/30 blur-3xl" />
+            <div className="absolute -bottom-2 h-28 w-40 rounded-full bg-ember-200/30 blur-2xl" />
             <div className="relative flex items-end gap-1.5">
               {[
                 { w: 16, h: 38, d: "0s" },

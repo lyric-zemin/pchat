@@ -3,7 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DataConnection, MediaConnection, Peer } from "peerjs";
 import { getSoundOff, playCue, releaseAudio, setSoundOff } from "@/lib/audio/cues";
-import { acquireLocalMedia, setTrackEnabled, stopStream } from "@/lib/media";
+import {
+  acquireLocalMedia,
+  DEFAULT_FACING,
+  setTrackEnabled,
+  stopStream,
+  type FacingMode,
+} from "@/lib/media";
 import { useRoomStore } from "@/lib/store";
 import { currentPhase } from "@/lib/time/phases";
 import { randomId } from "@/lib/utils";
@@ -29,6 +35,8 @@ export interface RoomEngine {
   toggleMic: () => void;
   toggleCam: () => void;
   toggleSound: () => void;
+  switchCamera: () => void;
+  canSwitchCamera: boolean;
 }
 
 function safe(action: () => void) {
@@ -54,6 +62,10 @@ export function usePeerRoom(): RoomEngine {
 
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [canSwitchCamera, setCanSwitchCamera] = useState(false);
+  const facingRef = useRef<FacingMode>(DEFAULT_FACING);
+  const refreshingRef = useRef(false);
+  const refreshRef = useRef<() => void>(() => undefined);
 
   const later = useCallback((action: () => void, ms: number) => {
     const id = window.setTimeout(action, ms);
@@ -170,8 +182,81 @@ export function usePeerRoom(): RoomEngine {
     });
   }, []);
 
+  const watchTracks = useCallback((stream: MediaStream | null) => {
+    // 设备被系统回收（来电、切后台、权限撤回）时重新采集。
+    stream?.getTracks().forEach((track) => {
+      track.addEventListener("ended", () => refreshRef.current(), { once: true });
+    });
+  }, []);
+
+  const refreshMedia = useCallback(
+    async (facing?: FacingMode) => {
+      const state = useRoomStore.getState();
+      if (refreshingRef.current || closingRef.current) return;
+      if (state.phase === "lobby" || state.phase === "leaving") return;
+      if (facing && !localRef.current?.getVideoTracks().length) return;
+      refreshingRef.current = true;
+      try {
+        const target = facing ?? facingRef.current;
+        const media = await acquireLocalMedia(target);
+        const latest = useRoomStore.getState();
+        if (latest.phase === "lobby" || latest.phase === "leaving" || closingRef.current) {
+          stopStream(media.stream);
+          return;
+        }
+        if (facing && !media.hasVideo) {
+          stopStream(media.stream);
+          latest.setMediaNote("这台设备没有可切换的摄像头，已保持原来的画面。");
+          return;
+        }
+
+        // replaceTrack 让对端无需重新协商；尚未建立呼叫时后续 call 直接用新流。
+        const pc = (
+          callRef.current as (MediaConnection & { peerConnection?: RTCPeerConnection }) | null
+        )?.peerConnection;
+        if (pc) {
+          const video = media.stream?.getVideoTracks()[0] ?? null;
+          const audio = media.stream?.getAudioTracks()[0] ?? null;
+          for (const sender of pc.getSenders()) {
+            const track =
+              sender.track?.kind === "video"
+                ? video
+                : sender.track?.kind === "audio"
+                  ? audio
+                  : null;
+            if (track) {
+              try {
+                await sender.replaceTrack(track);
+              } catch {
+                // 通道正在重建时忽略，下一次呼叫会拿到最新 localStream。
+              }
+            }
+          }
+        }
+
+        stopStream(localRef.current);
+        localRef.current = media.stream;
+        setLocalStream(media.stream);
+        facingRef.current = target;
+        latest.setMediaNote(media.note);
+        latest.setCam(media.hasVideo);
+        latest.setMic(media.hasAudio);
+        latest.setLocalReady(Boolean(media.stream));
+        send({ type: "media-state", mic: media.hasAudio, cam: media.hasVideo });
+        watchTracks(media.stream);
+      } finally {
+        refreshingRef.current = false;
+      }
+    },
+    [send, watchTracks],
+  );
+
+  refreshRef.current = () => {
+    void refreshMedia();
+  };
+
   const prepareMedia = useCallback(async () => {
-    const media = await acquireLocalMedia();
+    const media = await acquireLocalMedia(facingRef.current);
     localRef.current = media.stream;
     setLocalStream(media.stream);
     const state = useRoomStore.getState();
@@ -179,7 +264,8 @@ export function usePeerRoom(): RoomEngine {
     state.setCam(media.hasVideo);
     state.setMic(media.hasAudio);
     state.setLocalReady(Boolean(media.stream));
-  }, []);
+    watchTracks(media.stream);
+  }, [watchTracks]);
 
   const onDisconnected = useCallback((peer: Peer) => {
     const state = useRoomStore.getState();
@@ -422,6 +508,25 @@ export function usePeerRoom(): RoomEngine {
     if (!next) playCue("message");
   }, []);
 
+  const switchCamera = useCallback(() => {
+    void refreshMedia(facingRef.current === "user" ? "environment" : "user");
+  }, [refreshMedia]);
+
+  useEffect(() => {
+    const supported = navigator.mediaDevices?.getSupportedConstraints?.().facingMode;
+    setCanSwitchCamera(Boolean(supported));
+  }, []);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      const stream = localRef.current;
+      if (stream?.getTracks().some((track) => track.readyState === "ended")) void refreshMedia();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [refreshMedia]);
+
   useEffect(() => {
     useRoomStore.getState().setSoundOff(getSoundOff());
   }, []);
@@ -443,5 +548,7 @@ export function usePeerRoom(): RoomEngine {
     toggleMic,
     toggleCam,
     toggleSound,
+    switchCamera,
+    canSwitchCamera,
   };
 }
