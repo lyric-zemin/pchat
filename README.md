@@ -27,6 +27,14 @@ npm run typecheck  # TypeScript 检查
 npm run lint       # ESLint
 ```
 
+## 线上版本
+
+线上地址：https://lyric-zemin.github.io/pchat/ 。GitHub Pages 自带 HTTPS，摄像头与麦克风可正常使用。
+
+推送到 `master`，或在仓库 Actions 页手动运行 `Deploy to GitHub Pages`，都会自动构建并发布。首次发布前需在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
+
+发布时 `.github/workflows/deploy.yml` 会注入 `STATIC_EXPORT=true` 与 `NEXT_PUBLIC_BASE_PATH=/pchat`，把站点静态导出到 `out/` 后上传；本地的 `npm run dev`、`npm run build`、`npm run start` 不受影响，仍使用默认的服务端构建。
+
 ## 暗号怎么用
 
 暗号就是房门的钥匙。它被规范化（忽略大小写、空格、连字符、易混字符）后用 SHA-256 派生出房主的 Peer ID，所以**不需要房间目录服务器**：同样的暗号总会指向同一间房。
