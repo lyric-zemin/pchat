@@ -31,10 +31,10 @@ export default function RoomView() {
       <RoomTopBar />
       <PresenceFeedback />
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-[1440px] flex-col px-4 pb-[calc(6.5rem+var(--safe-bottom))] pt-[calc(5rem+var(--safe-top))] sm:px-8 landscapeShort:pb-[calc(1rem+var(--safe-bottom))] landscapeShort:pr-[calc(5.5rem+var(--safe-right))]">
+      <div className="relative z-10 mx-auto flex min-h-[max(100dvh,700px)] max-w-[1440px] flex-col px-4 pb-[calc(6.5rem+var(--safe-bottom))] pt-[calc(5rem+var(--safe-top))] sm:px-8 landscapeShort:pb-[calc(1rem+var(--safe-bottom))] landscapeShort:pr-[calc(5.5rem+var(--safe-right))]">
         <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="flex min-h-0 min-w-0 flex-col gap-3">
-            <div className="max-h-[52dvh] min-h-[220px] flex-1 landscapeShort:max-h-[calc(100dvh-6rem)] landscapeShort:min-h-0">
+            <div className="max-h-[52dvh] min-h-[220px] flex-1 lg:max-h-[720px] landscapeShort:max-h-[calc(100dvh-6rem)] landscapeShort:min-h-0">
               <VideoStage />
             </div>
             <div className="flex justify-center md:hidden landscapeShort:hidden">

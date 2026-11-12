@@ -10,7 +10,7 @@ const config: Config = {
         short: { raw: "(max-height: 640px)" },
         // 仅手机横屏：桌面宽屏也是 landscape，但不能套用竖排控制栏。
         landscapeShort: {
-          raw: "(orientation: landscape) and (max-height: 640px)",
+          raw: "(orientation: landscape) and (max-height: 640px) and (max-width: 1023px)",
         },
       },
       colors: {

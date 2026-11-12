@@ -175,10 +175,27 @@ body {
   outline: none;
   cursor: pointer;
   touch-action: none;
+  /* 浏览器给 range 的默认白色底色会盖住 6px 轨道，必须显式清掉。 */
+  background-color: transparent;
+}
+
+/* 隐藏浏览器默认轨道：否则 44px 高的 input 会露出一条白色粗轨。 */
+.pchat-range::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+  border: none;
+}
+
+.pchat-range::-moz-range-track {
+  height: 6px;
+  background: transparent;
+  border: none;
 }
 
 .pchat-range::-webkit-slider-thumb {
   -webkit-appearance: none;
+  /* 相对 6px 轨道垂直居中。 */
+  margin-top: -6px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
