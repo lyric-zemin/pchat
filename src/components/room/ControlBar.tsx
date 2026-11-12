@@ -39,8 +39,8 @@ export default function ControlBar({ onOpenPanel, activePanel }: ControlBarProps
   const leaving = phase === "leaving";
 
   return (
-    <div className="safe-inset-x pointer-events-none fixed inset-x-0 bottom-0 z-30 px-2 pb-[calc(0.75rem+var(--safe-bottom))] sm:px-8 sm:pb-[calc(1rem+var(--safe-bottom))] landscapeShort:bottom-auto landscapeShort:left-auto landscapeShort:right-0 landscapeShort:top-[calc(4.5rem+var(--safe-top))] landscapeShort:w-[76px] landscapeShort:px-0">
-      <div className="glass pchat-scroll pointer-events-auto mx-auto flex h-[72px] max-w-xl items-center justify-center gap-1 rounded-full px-2 sm:gap-2 sm:px-5 landscapeShort:h-auto landscapeShort:max-h-[calc(100dvh-6rem)] landscapeShort:flex-col landscapeShort:gap-1 landscapeShort:overflow-y-auto landscapeShort:p-2">
+    <div className="safe-inset-x pointer-events-none fixed inset-x-0 bottom-0 z-30 px-2 pb-[calc(0.75rem+var(--safe-bottom))] sm:px-8 sm:pb-[calc(1rem+var(--safe-bottom))] landscapeShort:bottom-auto landscapeShort:left-auto landscapeShort:right-0 landscapeShort:top-[calc(6rem+var(--safe-top))] landscapeShort:w-[76px] landscapeShort:px-0">
+      <div className="glass pchat-scroll pointer-events-auto mx-auto flex h-[72px] max-w-xl items-center justify-center gap-1 rounded-full px-2 sm:gap-2 sm:px-5 landscapeShort:h-auto landscapeShort:max-h-[calc(100dvh-7rem)] landscapeShort:flex-col landscapeShort:gap-1 landscapeShort:overflow-y-auto landscapeShort:p-2">
         <Tooltip label={micOn ? "关掉麦克风" : "打开麦克风"}>
           <Button
             variant={micOn ? "quiet" : "danger"}

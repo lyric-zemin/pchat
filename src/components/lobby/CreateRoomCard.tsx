@@ -96,22 +96,23 @@ export default function CreateRoomCard() {
         )}
       </div>
 
-      <div className="mb-2 flex flex-wrap items-center gap-1 sm:mb-3">
+      <div className="mb-2 flex items-center gap-1 sm:mb-3">
         <Button
           variant="ghost"
           size="sm"
+          className="px-2 sm:px-4"
           onClick={() => setCode(generateCode())}
           disabled={custom || busy}
         >
           <RefreshCw className="h-3.5 w-3.5" />
           换一个
         </Button>
-        <Button variant="ghost" size="sm" onClick={toggleCustom} disabled={busy}>
+        <Button variant="ghost" size="sm" className="px-2 sm:px-4" onClick={toggleCustom} disabled={busy}>
           <PencilLine className="h-3.5 w-3.5" />
           {custom ? "用生成的" : "自己写"}
         </Button>
         <span className="flex-1" />
-        <Tooltip label={copied ? "已复制" : "复制暗号"}>
+        <Tooltip label={copied ? "已复制" : "复制暗号"} className="shrink-0">
           <Button
             variant="outline"
             size="icon"

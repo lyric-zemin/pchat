@@ -24,7 +24,7 @@ export default function LobbyView() {
       <RoomScene />
       <TopBar />
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-6xl flex-col justify-start px-4 pb-[calc(5.5rem+var(--safe-bottom))] pt-[calc(4.5rem+var(--safe-top))] sm:justify-center sm:px-8 sm:pb-36 sm:pt-24">
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-6xl flex-col justify-start px-4 pb-[calc(5.5rem+var(--safe-bottom))] pt-[calc(5rem+var(--safe-top))] sm:justify-center sm:px-8 sm:pb-36 sm:pt-24 landscapeShort:pb-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ export default function LobbyView() {
         </motion.div>
 
         {/* 窄屏两个入口同时可见，点标签切换表单；桌面仍是并排双卡。 */}
-        <div className="mb-3 mt-4 flex gap-2 md:hidden" role="tablist" aria-label="选择进入方式">
+        <div className="mb-2 mt-3 flex gap-2 md:hidden" role="tablist" aria-label="选择进入方式">
           {(
             [
               ["create", "开一间房"],
@@ -85,7 +85,7 @@ export default function LobbyView() {
         </div>
       </div>
 
-      <footer className="safe-inset-x fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(0.75rem+var(--safe-bottom))] sm:px-8">
+      <footer className="safe-inset-x fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(0.75rem+var(--safe-bottom))] sm:px-8 landscapeShort:static landscapeShort:mt-3">
         <div className="glass mx-auto flex max-w-6xl items-center gap-3 rounded-full px-2 py-1.5 sm:px-5">
           <div className="hidden min-w-0 flex-1 items-center gap-2 text-xs text-[var(--scene-soft)] sm:flex">
             <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
